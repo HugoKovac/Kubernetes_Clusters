@@ -6,3 +6,4 @@ install:
 .PHONY: install
 
 # sudo kubectl delete all,ingress --all -n web
+# https://kubernetes.io/fr/docs/concepts/workloads/controllers/deployment/
