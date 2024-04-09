@@ -29,10 +29,10 @@ Vagrant.configure("2") do |config|
             sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
             echo "Install k3d"
-            curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+            curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | INSTALL_K3S_EXEC="--flannel-iface=eth1" bash
 
             echo "Create k3d cluster"
-            sudo k3d cluster create mycluster --api-port 8000
+            sudo k3d cluster create mycluster --api-port 8081
 
             echo "Install kubectl"
             curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
