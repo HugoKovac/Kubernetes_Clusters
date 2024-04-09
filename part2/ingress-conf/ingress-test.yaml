@@ -1,18 +1,150 @@
 ---
-
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app-two
+  name: app-two
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app-two
+  template:
+    metadata:
+      labels:
+        app: app-two
+    spec:
+      containers:
+        - image: traefik/whoami:latest
+          name: whoami
+          ports:
+            - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app-three
+  name: app-three
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-three
+  template:
+    metadata:
+      labels:
+        app: app-three
+    spec:
+      containers:
+        - image: traefik/whoami:latest
+          name: whoami
+          ports:
+            - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app-one
+  name: app-one
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-one
+  template:
+    metadata:
+      labels:
+        app: app-one
+    spec:
+      containers:
+        - image: traefik/whoami:latest
+          name: whoami
+          ports:
+            - containerPort: 80
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ingress-nginx-controller-loadbalancer
-  namespace: ingress-nginx
+  name: app-one
 spec:
+  type: ClusterIP
   selector:
-    app.kubernetes.io/component: controller
-    app.kubernetes.io/instance: ingress-nginx
-    app.kubernetes.io/name: ingress-nginx
+    app: app-one
   ports:
-    - name: http
-      port: 80
-      protocol: TCP
-      targetPort: 80
-  type: LoadBalancer
+    - port: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-two
+spec:
+  type: ClusterIP
+  selector:
+    app: app-two
+  ports:
+    - port: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-three
+spec:
+  type: ClusterIP
+  selector:
+    app: app-three
+  ports:
+    - port: 80
+---    
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+
+    
+spec:
+  rules:
+    - host: ""
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-three
+                port:
+                  number: 80
+    - host: app1.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-one
+                port:
+                  number: 80
+    - host: app2.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-two
+                port:
+                  number: 80
+    - host: app3.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-three
+                port:
+                  number: 80

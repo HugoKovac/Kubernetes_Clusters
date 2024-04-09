@@ -4,3 +4,5 @@ install:
 	vagrant plugin install vagrant-vbguest
 
 .PHONY: install
+
+# sudo kubectl delete all,ingress --all -n web
