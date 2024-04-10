@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wil-deployment
+  name: wil-pod
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - image: wil42/playground:v1
-          name: wil-container
+          name: wil-pod
           ports:
             - containerPort: 8888
