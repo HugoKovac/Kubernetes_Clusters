@@ -28,7 +28,7 @@ pod_name=$(kubectl get pods -o=name | grep wil-pod)
 # Vérifiez si le nom du pod est trouvé
 if [ -n "$pod_name" ]; then
 	# Lancez le port-forwarding avec le nom du pod trouvé
-	kubectl port-forward svc/wil-service 8888:8888 >/dev/null 2>&1 &
+	kubectl port-forward svc/wil-service 8888:8888 -n dev >/dev/null 2>&1 &
 	echo "Port-forwarding démarré vers le pod $pod_name"
 else
 	echo "Aucun pod trouvé avec le nom wil-pod"
