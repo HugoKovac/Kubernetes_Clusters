@@ -20,16 +20,9 @@ argocd login localhost:8080 --username admin --password $PASS --insecure
 # ArgoCD app creation
 argocd app create -f scripts/wil-application.yaml
 
-sleep 45
+sleep 10
 
-# Exécutez kubectl get pods et extrayez le nom du pod
-pod_name=$(kubectl get pods -o=name | grep wil-pod)
+echo wait for wilpod
+kubectl wait --for=condition=Ready pod --all -n dev --timeout=300s
 
-# Vérifiez si le nom du pod est trouvé
-if [ -n "$pod_name" ]; then
-	# Lancez le port-forwarding avec le nom du pod trouvé
-	kubectl port-forward svc/wil-service 8888:8888 -n dev >/dev/null 2>&1 &
-	echo "Port-forwarding démarré vers le pod $pod_name"
-else
-	echo "Aucun pod trouvé avec le nom wil-pod"
-fi
+while true; do kubectl port-forward svc/wil-service 8888:8888 -n dev >/dev/null 2>&1 ; done&
