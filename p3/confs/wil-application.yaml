@@ -6,7 +6,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/HugoKovac/hkovac_Kubernetes_Clusters
-    path: part3/confs
+    path: p3/confs
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
