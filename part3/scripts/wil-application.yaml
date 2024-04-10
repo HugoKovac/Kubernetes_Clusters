@@ -5,7 +5,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/HugoKovac/Kubernetes_Clusters
+    repoURL: https://github.com/HugoKovac/hkovac_Kubernetes_Clusters
     path: part3
     targetRevision: HEAD
   destination:
