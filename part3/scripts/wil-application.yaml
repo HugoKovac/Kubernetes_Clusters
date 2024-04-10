@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wilapp
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/HugoKovac/Kubernetes_Clusters
+    path: part3
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated: {}

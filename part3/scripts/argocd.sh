@@ -18,12 +18,7 @@ argocd logout localhost:8080
 argocd login localhost:8080 --username admin --password $PASS --insecure
 
 # ArgoCD app creation
-argocd app create wilapp \
-	--repo https://github.com/HugoKovac/Kubernetes_Clusters \
-	--path part3 \
-	--dest-server https://kubernetes.default.svc \
-	--dest-namespace default \
-	--sync-policy automated
+argocd app create -f wil-application.yaml
 
 # External access point to our pod (curl localhost:8888 after to check)
 kubectl port-forward wil-pod-7dc8bc657c-zfsdz 8888:8888 >/dev/null 2>&1 &
