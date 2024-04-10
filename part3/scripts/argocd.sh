@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # External access point to ArgoCD
-kubectl port-forward svc/argocd-server -n argocd 8080:443 &
+kubectl port-forward svc/argocd-server -n argocd 8080:443 >/dev/null 2>&1 &
 
 # Initial password and future password
 ARGOCD_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
@@ -26,4 +26,4 @@ argocd app create wilapp \
 	--sync-policy automated
 
 # External access point to our pod (curl localhost:8888 after to check)
-kubectl port-forward wil-pod-7dc8bc657c-zfsdz 8888:8888
+kubectl port-forward wil-pod-7dc8bc657c-zfsdz 8888:8888 >/dev/null 2>&1 &

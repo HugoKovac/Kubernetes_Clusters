@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Delete argo port forwarding
+# Delete port forwarding
 kill %1
 kill %1
 
