@@ -4,14 +4,14 @@
 PASS="password"
 
 # Création du cluster Kubernetes avec k3d
-k3d cluster create mon-cluster --api-port 8000
+sudo k3d cluster create mon-cluster --api-port 8000
 
 # Création des namespaces
-kubectl create namespace argocd
-kubectl create namespace dev
+sudo kubectl create namespace argocd
+sudo kubectl create namespace dev
 
 # Installation d'ArgoCD dans le namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+sudo kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 # Pause pour laisser le temps à ArgoCD de démarrer complètement (environ 30 secondes)
 sleep 40
