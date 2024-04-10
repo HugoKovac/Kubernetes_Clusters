@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wil-app
+  namespace: argocd
+spec:
+  destination:
+    namespace: dev
+    server: "https://kubernetes.default.svc"
+  project: default
+  source:
+    repoURL: "https://github.com/HugoKovac/Kubernetes_Clusters"
+    targetRevision: HEAD
+    path: part3/
+  syncPolicy:
+    automated: {}
+  patchTemplate: |
+    spec:
+      template:
+        spec:
+          containers:
+          - name: wil-app
+            image: wil42/playground:v1
