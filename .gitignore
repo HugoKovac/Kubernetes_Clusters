@@ -1,2 +1,4 @@
 node-token
 .vagrant
+**/kubectl
+**/kubectl.sha256

@@ -5,4 +5,4 @@ kill %1
 kill %1
 
 # Delete cluster
-k3d cluster delete mon-cluster
+k3d cluster delete dev-cluster
