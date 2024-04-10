@@ -43,7 +43,7 @@ argocd logout localhost:8080
 argocd login localhost:8080 --username admin --password $PASS --insecure
 
 # ArgoCD app creation
-argocd app create -f scripts/wil-application.yaml
+argocd app create -f confs/wil-application.yaml
 
 sleep 10
 
