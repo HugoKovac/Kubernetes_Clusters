@@ -5,8 +5,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/HugoKovac/hkovac_Kubernetes_Clusters
-    path: p3/confs
+    repoURL: https://github.com/HugoKovac/hkovac_demo_argocd
+    path: wil
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
