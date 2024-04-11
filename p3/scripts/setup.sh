@@ -3,7 +3,7 @@
 # Création du cluster Kubernetes avec k3d
 # Port forward les nodePort, du service de notre appli et du service argocd qu'on va patch en nodePort
 echo k3d cluster creation...\n
-k3d cluster create dev-cluster --api-port 8000 --port 8888:30000@loadbalancer 8080:30500@loadbalancer
+k3d cluster create dev-cluster --api-port 8000 --port 8888:30000@loadbalancer --port 8080:30500@loadbalancer
 
 # Création des namespaces
 echo Namespace creation...\n
