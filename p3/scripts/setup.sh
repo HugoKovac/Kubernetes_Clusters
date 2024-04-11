@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Création du cluster Kubernetes avec k3d
-k3d cluster create dev-cluster --api-port 8000 --port 8888:8888@loadbalancer
+k3d cluster create dev-cluster --api-port 8000 --port 8888:30000@loadbalancer
 
 # Création des namespaces
 kubectl create namespace argocd
