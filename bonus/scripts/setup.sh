@@ -2,48 +2,44 @@
 
 # Création du cluster Kubernetes avec k3d
 # Port forward les nodePort, du service de notre appli et du service argocd qu'on va patch en nodePort
-echo k3d cluster creation...\n
+echo k3d cluster creation...
 k3d cluster create dev-cluster --api-port 8000 --port 8888:30000@loadbalancer --port 8080:30500@loadbalancer
 
 # Création des namespaces
-echo Namespace creation...\n
+echo Namespace creation...
 kubectl create namespace argocd
 kubectl create namespace dev
 kubectl create namespace gitlab
 
-# Install gitlab
+# Install gitlab instance with helm
+echo gitlab creation...
 helm repo add gitlab https://charts.gitlab.io/
 helm repo update
+
+# Using the gitlab helm chart
+# Following the helm config subchart, minikube has a min config so we'll use this for boilerplate and disabling the gitlab-runner and cert-manager
+# 0.0.0.0 Because we want every interface (and the ingress) to be able to talk with our gitlab webservice (i had issue for connecting to it otherwise)
+# The domain is under gitlab., and we need to configure it in /etc/hosts on our node (which is our machine for this projects)
 helm upgrade --install gitlab gitlab/gitlab \
-  --namespace gitlab \
-  --set global.hosts.domain=localhost \
-  --set global.hosts.externalIP=10.10.10.10 \
-  --set certmanager-issuer.email=me@localhost \
-  --set postgresql.image.tag=13.6.0
+	--namespace gitlab \
+	-f https://gitlab.com/gitlab-org/charts/gitlab/raw/master/examples/values-minikube-minimum.yaml \
+	--set global.hosts.domain=gitlab.custom-domain.com \
+	--set global.hosts.externalIP=0.0.0.0 \
+	--set global.hosts.https=false \
+	--timeout 600s
 
+# Wait until all the gitlab pods are up (webservice is the last one to load, and the only one we need)
+echo Waiting for the webservice pod...
+sleep 10
+kubectl wait --for=condition=Ready pod -l app=webservice -n gitlab --timeout=600s
 
-# Installation d'ArgoCD dans le namespace argocd
-# kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+# Get initial root password for gitlab
+GITLAB_PASSWORD=$(kubectl get secret gitlab-gitlab-initial-root-password -n gitlab -ojsonpath='{.data.password}' | base64 --decode)
+echo $GITLAB_PASSWORD
 
-# # Patch argocd service to be a nodePort, to use without portForwarding from the outside
-# kubectl patch svc argocd-server -n argocd --type='json' -p '[{"op":"replace","path":"/spec/type","value":"NodePort"},{"op":"replace","path":"/spec/ports/0/nodePort","value":30500}]'
+# Forward the web-service, cant be bother to patch it to a nodePort or doing smth else, and cant manage to access it via ingress, would probably need a custom ingress on top due to k3d
+echo Forwarding the web-service on port 8081...
+kubectl port-forward svc/gitlab-webservice-default -n gitlab 8081:8181 >/dev/null 2>&1 &
 
-# # Wait until all the pods
-# echo wait for the completion of argocd pods...\n
-# sleep 10
-# kubectl wait --for=condition=Ready pod --all -n argocd --timeout=300s
-
-# # Initial password and future password
-# ARGOCD_PASSWORD=$(argocd admin initial-password -n argocd | head -n 1)
-# PASS="password"
-
-# # ArgoCD login, update password, and login with new password
-# echo ArgoCD login, update password, and login with new password...\n
-# argocd login localhost:8080 --username admin --password $ARGOCD_PASSWORD --insecure
-# argocd account update-password --current-password $ARGOCD_PASSWORD --new-password $PASS
-# argocd logout localhost:8080
-# argocd login localhost:8080 --username admin --password $PASS --insecure
-
-# # ArgoCD app creation
-# echo App creation...\n
-# argocd app create -f confs/wil-application.yaml
+# Create aleduc gitlab folder with wilproj content before creating the gitops cd with argo
+# Then launch app.sh

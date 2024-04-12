@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wil-pod
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: wil-pod
+  template:
+    metadata:
+      labels:
+        app: wil-pod
+    spec:
+      containers:
+        - image: wil42/playground:v1
+          name: wil-container
+          ports:
+            - containerPort: 8888

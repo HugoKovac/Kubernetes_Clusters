@@ -5,8 +5,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/HugoKovac/hkovac_demo_argocd
-    path: wil
+    repoURL: http://gitlab-webservice-default.gitlab.svc:8181/root/aleduc.git
+    path: .
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
